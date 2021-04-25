@@ -87,6 +87,5 @@ else:
     fig.add_trace(go.Bar(name='World Data', x=x, y=y))
     st.plotly_chart(fig, use_container_width=True)
 
-st.sidebar.subheader(
-    """created_with (💖 and ☕) by McTechie """)
-st.sidebar.image('logo.png', width=300)
+st.sidebar.subheader("""Created with 💖 and ☕ by """)
+st.sidebar.image('logo.png', width=75)
