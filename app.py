@@ -88,5 +88,5 @@ else:
     st.plotly_chart(fig, use_container_width=True)
 
 st.sidebar.subheader(
-    """Created with 💖 by McTechie """)
+    """created_with (💖 and ☕) by McTechie """)
 st.sidebar.image('logo.png', width=300)
