@@ -11,16 +11,15 @@ from streamlit.script_runner import StopException, RerunException
 
 fig = go.Figure()
 st.write("""
-# Covid19 Tracking App 🚑
-
-[Coronavirus COVID19 API](https://documenter.getpostman.com/view/10808728/SzS8rjbc?version=latest#81447902-b68a-4e79-9df9-1b371905e9fa) is used to get the data in this app.
+# Covid-19 Tracking App 🚑
 """)
 
 st.write(
-    'Coronavirus is officially a pandemic. Since the first case in december the disease has spread fast reaching almost every corner of the world.' +
-    'They said it\'s not a severe disease but the number of people that needs hospital care is growing as fast as the new cases.' +
-    'Some governments are taking measures to prevent a sanitary collapse to be able to take care of all these people.' +
-    'I\'m tackling this challenge here. Let\'s see how some countries/regions are doing!')
+    'Since the first case in december 2019, the disease has spread fast reaching almost every corner of the world. ' +
+    'The number of people that needs hospital care is growing as fast as the new cases. ' +
+    'Some governments are taking measures to prevent a sanitary collapse to be able to take care of all these people.\n' + '\n' +
+    'This is my attempt to tackle this challenge!\n' + '\n' +
+    'Let\'s see how some of the countries / regions are doing!')
 
 url = 'https://api.covid19api.com/countries'
 r = requests.get(url)
@@ -35,15 +34,17 @@ graph_type = st.sidebar.selectbox('Cases type', ('confirmed', 'deaths', 'recover
 st.sidebar.subheader('Search by country 📍')
 country = st.sidebar.selectbox('Country', df0.Country)
 country1 = st.sidebar.selectbox('Compare with another Country', df0.Country)
+
 if st.sidebar.button('Refresh Data'):
     raise RerunException(st._RerunData(None))
 
 if country != 'Select a Country':
     slug = df0.Slug[df0['Country'] == country].to_string(index=False)[1:]
-    url = 'https://api.covid19api.com/total/dayone/country/' + slug + '/status/' + graph_type
+    url = 'https://api.covid19api.com/total/dayone/country/'+ country.lower() +'/status/'+ graph_type
     r = requests.get(url)
-    st.write("""# Total """ + graph_type + """ cases in """ + country + """ are: """ + str(r.json()[-1].get("Cases")))
-    df = json_normalize(r.json())
+    r = r.json()
+    st.write("""### Total """ + graph_type + """ cases in """ + country + """ are: """ + str(r[-1]["Cases"]))
+    df = json_normalize(r)
     layout = go.Layout(
         title=country + '\'s ' + graph_type + ' cases Data',
         xaxis=dict(title='Date'),
@@ -53,11 +54,12 @@ if country != 'Select a Country':
 
     if country1 != 'Select a Country':
         slug1 = df0.Slug[df0['Country'] == country1].to_string(index=False)[1:]
-        url = 'https://api.covid19api.com/total/dayone/country/' + slug1 + '/status/' + graph_type
+        url = 'https://api.covid19api.com/total/dayone/country/' + country1.lower() + '/status/' + graph_type
         r = requests.get(url)
+        r = r.json()
         st.write(
-            """# Total """ + graph_type + """ cases in """ + country1 + """ are: """ + str(r.json()[-1].get("Cases")))
-        df = json_normalize(r.json())
+            """### Total """ + graph_type + """ cases in """ + country1 + """ are: """ + str(r[-1]["Cases"]))
+        df = json_normalize(r)
         layout = go.Layout(
             title=country + ' vs ' + country1 + ' ' + graph_type + ' cases Data',
             xaxis=dict(title='Date'),
@@ -87,5 +89,4 @@ else:
     fig.add_trace(go.Bar(name='World Data', x=x, y=y))
     st.plotly_chart(fig, use_container_width=True)
 
-st.sidebar.subheader("""Created with 💖 and ☕ by """)
-st.sidebar.image('logo.png', width=75)
+st.sidebar.subheader(""" A McTechie creation 👨‍🎨✨""")
